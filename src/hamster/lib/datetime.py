@@ -134,7 +134,8 @@ class time(pdt.time):
     - conversion to and from string facilities
     """
 
-    FMT = "%H:%M"  # display format, e.g. 13:30
+    FMT = "%H:%M"  # internal format, e.g. 13:30
+    DISPLAY_FMT = "%-I:%M %p"  # display format, e.g. 1:30 pm
 
     def __new__(cls,
                 hour=0, minute=0,
@@ -214,8 +215,11 @@ class datetime(pdt.datetime):
     - conversion to and from string facilities
     """
 
-    # display format, e.g. 2020-01-20 20:40
+    # internal format, e.g. 2020-01-20 20:40
     FMT = "{} {}".format(date.FMT, time.FMT)
+
+    # display format, e.g. 2020-01-20 8:40 pm
+    DISPLAY_FMT = "{} {}".format(date.FMT, time.DISPLAY_FMT)
 
     def __new__(cls, year, month, day,
                 hour=0, minute=0,
@@ -425,7 +429,11 @@ class Range():
     def __iter__(self):
         return (self.start, self.end).__iter__()
 
-    def format(self, default_day=None, explicit_none=True):
+    def lower_ampm(self, text):
+        # this is only slightly hacky
+        return text.replace("AM", "am").replace("PM", "pm")
+
+    def format(self, default_day=None, explicit_none=True, display=False):
         """Return a string representing the time range.
 
         Start date is shown only if start does not belong to default_day.
@@ -437,17 +445,17 @@ class Range():
 
         if self.start:
             if self.start.hday() != default_day:
-                start_str = self.start.strftime(datetime.FMT)
+                start_str = self.lower_ampm(self.start.strftime(datetime.DISPLAY_FMT if display else datetime.FMT))
             else:
-                start_str = self.start.strftime(time.FMT)
+                start_str = self.lower_ampm(self.start.strftime(time.DISPLAY_FMT if display else time.FMT))
         else:
             start_str = none_str
 
         if self.end:
             if self.end.hday() != self.start.hday():
-                end_str = self.end.strftime(datetime.FMT)
+                end_str = self.lower_ampm(self.end.strftime(datetime.DISPLAY_FMT if display else datetime.FMT))
             else:
-                end_str = self.end.strftime(time.FMT)
+                end_str = self.lower_ampm(self.end.strftime(time.DISPLAY_FMT if display else time.FMT))
         else:
             end_str = none_str
 

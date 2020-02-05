@@ -56,7 +56,7 @@ class Selection(graphics.Sprite):
         # adjust labels
         self.start_label.visible = self.start_time is not None and self.start_time != self.end_time
         if self.start_label.visible:
-            self.start_label.text = self.start_time.strftime("%H:%M")
+            self.start_label.text = self.start_time.strftime("%-I:%M %p")
             if self.x - self.start_label.width - 5 > 0:
                 self.start_label.x = -self.start_label.width - 5
             else:
@@ -66,7 +66,7 @@ class Selection(graphics.Sprite):
 
         self.end_label.visible = self.end_time is not None and self.start_time != self.end_time
         if self.end_label.visible:
-            self.end_label.text = self.end_time.strftime("%H:%M")
+            self.end_label.text = self.end_time.strftime("%-I:%M %p")
             self.end_label.x = self.width + 5
             self.end_label.y = self.height + 2
 
@@ -229,7 +229,7 @@ class DayLine(graphics.Scene):
                     g.line_to(round(i / minute_pixel), bottom)
                     label_minutes = time.strftime("%b %d")
                 else:
-                    label_minutes = time.strftime("%H<small><sup>%M</sup></small>")
+                    label_minutes = time.strftime("%-I<small><sup>%M %p</sup></small>")
 
                 g.set_color(text)
                 layout.set_markup(label_minutes)

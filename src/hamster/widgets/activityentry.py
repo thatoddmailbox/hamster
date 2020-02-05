@@ -53,6 +53,7 @@ class DataRow(object):
     """want to split out visible label, description, activity data
       and activity data with time (full_data)"""
     def __init__(self, label, data=None, full_data=None, description=None):
+        print("DataRow", label)
         self.label = label
         self.data = data or label
         self.full_data = full_data or data or label
@@ -390,9 +391,9 @@ class CmdLineEntry(gtk.Entry):
         matches = sorted(matches, key=lambda x: x[1], reverse=True)[:7]
 
         for match, score in matches:
-            label = (fact.start_time or now).strftime("%H:%M")
+            label = (fact.start_time or now).strftime("%-I:%M %p").lower()
             if fact.end_time:
-                label += fact.end_time.strftime("-%H:%M")
+                label += fact.end_time.strftime(" - %-I:%M %p").lower()
 
             markup_label = label + " " + (stuff.escape_pango(match).replace(search, "<b>%s</b>" % search) if search else match)
             label += " " + match
@@ -419,20 +420,20 @@ class CmdLineEntry(gtk.Entry):
 
             if variant_fact:
                 variant_fact.description = None
-                variant = variant_fact.serialized(default_day=self.default_day)
+                variant = variant_fact.serialized(default_day=self.default_day, display=True)
                 variants.append((description, variant))
 
         else:
             # brand new fact
             description = "start now"
-            variant = now.strftime("%H:%M ")
+            variant = now.strftime("%-I:%M %p ").lower()
             variants.append((description, variant))
 
             prev_fact = self.todays_facts[-1] if self.todays_facts else None
             if prev_fact and prev_fact.end_time:
-                since = (now - prev_fact.end_time).format()
+                since = (now - prev_fact.end_time).format(display=True)
                 description = "from previous activity, %s ago" % since
-                variant = prev_fact.end_time.strftime("%H:%M ")
+                variant = prev_fact.end_time.strftime("%-I:%M %p ").lower()
                 variants.append((description, variant))
 
             description = "start activity -n minutes ago (1 or 3 digits allowed)"

@@ -136,6 +136,8 @@ class TimeInput(gtk.Entry):
         if not str_time:
             return None
 
+        isPM = "pm" in str_time
+
         # strip everything non-numeric and consider hours to be first number
         # and minutes - second number
         numbers = re.split("\D", str_time)
@@ -150,6 +152,9 @@ class TimeInput(gtk.Entry):
                 hours = int(numbers[0])
             if len(numbers) >= 2:
                 minutes = int(numbers[1])
+
+        if isPM:
+            hours += 12
 
         if (hours is None or minutes is None) or hours > 24 or minutes > 60:
             return None  # no can do
@@ -172,7 +177,7 @@ class TimeInput(gtk.Entry):
     def _format_time(self, time):
         if time is None:
             return ""
-        return time.strftime("%H:%M").lower()
+        return time.strftime("%-I:%M %p").lower()
 
 
     def _on_focus_in_event(self, entry, event):

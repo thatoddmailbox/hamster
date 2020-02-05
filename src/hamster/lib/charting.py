@@ -330,7 +330,7 @@ class HorizontalDayChart(graphics.Scene):
 
             minutes = i % (24 * 60)
 
-            self.layout.set_markup(dt.time(minutes / 60, minutes % 60).strftime("%H<small><sup>%M</sup></small>"))
+            self.layout.set_markup(dt.time(minutes / 60, minutes % 60).strftime("%-I<small><sup>%M</sup></small>"))
             label_w, label_h = self.layout.get_pixel_size()
 
             context.move_to(self.graph_x + x - label_w / 2,

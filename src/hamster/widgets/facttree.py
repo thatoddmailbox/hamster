@@ -147,9 +147,9 @@ class FactRow(object):
 
         self.fact = fact
 
-        time_label = fact.start_time.strftime("%H:%M -")
+        time_label = fact.start_time.strftime("%-I:%M %p -")
         if fact.end_time:
-            time_label += fact.end_time.strftime(" %H:%M")
+            time_label += fact.end_time.strftime(" %-I:%M %p")
         self.time_label.set_text(time_label)
 
         self.activity_label.set_text(stuff.escape_pango(fact.activity))

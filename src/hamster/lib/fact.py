@@ -202,7 +202,7 @@ class Fact(object):
             res += " %s" % " ".join("#%s" % tag for tag in self.tags)
         return res
 
-    def serialized(self, range_pos="head", default_day=None):
+    def serialized(self, range_pos="head", default_day=None, display=False):
         """Return a string fully representing the fact."""
         name = self.serialized_name()
         if range_pos == "head":
@@ -214,7 +214,7 @@ class Fact(object):
             # TODO: should check last tag.
             need_explicit = False
         datetime = self.range.format(default_day=default_day,
-                                     explicit_none=need_explicit)
+                                     explicit_none=need_explicit, display=display)
         # no need for space if name or datetime is missing
         space = " " if name and datetime else ""
         assert range_pos in ("head", "tail")
