@@ -36,7 +36,7 @@ class TimeInput(gtk.Entry):
     def __init__(self, time=None, start_time=None, **kwargs):
         gtk.Entry.__init__(self, **kwargs)
         self.news = False
-        self.set_width_chars(7) #7 is like 11:24pm
+        self.set_width_chars(10) #10 is like 11:24pm
 
         self.time = time
         self.set_start_time(start_time)

@@ -104,7 +104,7 @@ class TagLabel(Label):
 class FactRow(object):
     def __init__(self):
         self.time_label = Label()
-        self.activity_label = Label(x=100)
+        self.activity_label = Label(x=125)
 
         self.category_label = Label()
         self.description_label = Label()
