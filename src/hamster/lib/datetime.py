@@ -148,7 +148,7 @@ class time(pdt.time):
                                     tzinfo=None, fold=fold)
 
     @classmethod
-    def _extract_time(cls, match, h="hour", m="minute"):
+    def _extract_time(cls, match, h="hour", m="minute", a="ampm"):
         """Extract time from a time.re match.
 
         Custom group names allow to use the same method
@@ -156,14 +156,18 @@ class time(pdt.time):
 
         h (str): name of the group containing the hour
         m (str): name of the group containing the minute
+        a (str): name of the group containing the am/pm
 
         seealso: time.parse
         """
         h_str = match.group(h)
         m_str = match.group(m)
+        a_str = match.group(a)
         if h_str and m_str:
             hour = int(h_str)
             minute = int(m_str)
+            if a_str and a_str.lower() == "pm":
+                hour += 12
             return cls(hour, minute)
         else:
             return None
@@ -192,6 +196,7 @@ class time(pdt.time):
             [,\.:]?                           # Separator can be colon,
                                               # dot, comma, or nothing.
             (?P<minute>[0-5][0-9])            # minute (2 digits, between 00 and 59)
+            \s*(?P<ampm>am|pm|AM|PM)*         # am/pm
             (?!\d?-\d{2}-\d{2})               # Negative lookahead:
                                               # avoid matching date by inadvertance.
                                               # For instance 2019-12-05
@@ -261,7 +266,7 @@ class datetime(pdt.datetime):
             return self.strftime(self.FMT)
 
     @classmethod
-    def _extract_datetime(cls, match, d="date", h="hour", m="minute", r="relative",
+    def _extract_datetime(cls, match, d="date", h="hour", m="minute", a="ampm", r="relative",
                           default_day=None):
         """extract datetime from a datetime.pattern match.
 
@@ -274,7 +279,7 @@ class datetime(pdt.datetime):
         default_day (dt.date): the datetime will belong to this hamster day if
                                date is missing.
         """
-        _time = time._extract_time(match, h, m)
+        _time = time._extract_time(match, h, m, a)
         if _time:
             date_str = match.group(d)
             if date_str:
@@ -387,7 +392,7 @@ class datetime(pdt.datetime):
             return base_pattern
         else:
             to_replace = ("whole", "relative",
-                          "year", "month", "day", "date", "tens", "hour", "minute")
+                          "year", "month", "day", "date", "tens", "hour", "minute", "ampm")
             specifics = ["{}{}".format(s, n) for s in to_replace]
             res = base_pattern
             for src, dest in zip(to_replace, specifics):
@@ -529,7 +534,7 @@ class Range():
             start = firstday.start
         else:
             firstday = None
-            start = datetime._extract_datetime(m, d="date1", h="hour1",
+            start = datetime._extract_datetime(m, d="date1", h="hour1", a="ampm1",
                                                m="minute1", r="relative1",
                                                default_day=default_day)
             if isinstance(start, pdt.timedelta):
@@ -547,7 +552,7 @@ class Range():
             end = start + timedelta(minutes=duration)
         else:
             end_default_day = start.hday() if start else default_day
-            end = datetime._extract_datetime(m, d="date2", h="hour2",
+            end = datetime._extract_datetime(m, d="date2", h="hour2", a="ampm1",
                                              m="minute2", r="relative2",
                                              default_day=end_default_day)
             if isinstance(end, pdt.timedelta):

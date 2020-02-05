@@ -53,7 +53,6 @@ class DataRow(object):
     """want to split out visible label, description, activity data
       and activity data with time (full_data)"""
     def __init__(self, label, data=None, full_data=None, description=None):
-        print("DataRow", label)
         self.label = label
         self.data = data or label
         self.full_data = full_data or data or label

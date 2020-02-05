@@ -287,7 +287,7 @@ class CustomFactController(gobject.GObject):
     def update_cmdline(self, select=None):
         """Update the cmdline entry content."""
         self.cmdline_fact = self.fact.copy(description=None)
-        label = self.cmdline_fact.serialized(default_day=self.date)
+        label = self.cmdline_fact.serialized(default_day=self.date, display=True)
         with self.cmdline.handler_block(self.cmdline.checker):
             self.cmdline.set_text(label)
             if select:
