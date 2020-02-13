@@ -154,7 +154,9 @@ class TimeInput(gtk.Entry):
                 minutes = int(numbers[1])
 
         if isPM:
-            hours += 12
+            # make sure we don't add if we're already at noon
+            if hours != 12:
+                hours += 12
 
         if (hours is None or minutes is None) or hours > 24 or minutes > 60:
             return None  # no can do

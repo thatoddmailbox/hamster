@@ -167,7 +167,9 @@ class time(pdt.time):
             hour = int(h_str)
             minute = int(m_str)
             if a_str and a_str.lower() == "pm":
-                hour += 12
+                # make sure we don't add if we're already at noon
+                if hour != 12:
+                    hour += 12
             return cls(hour, minute)
         else:
             return None
